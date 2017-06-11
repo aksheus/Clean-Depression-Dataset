@@ -13,12 +13,19 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-            // add file exists check later 
-            string hmm = @"C:\Users\abkma\reddit-depression\testing\chunk_1\test_subject25_1.xml";
-            XmlReader Reader = new XmlReader(hmm);
-            List<string> Output = Reader.GetTagData(RequiredTag,ParentTag);
-            Writer Write = new Writer();
-            Write.WriteToTxt(PreprocessPath(hmm), Output);
+            string[] Directories = Directory.GetDirectories(ReadDirectory);
+
+            foreach ( string Direc in Directories)
+            {
+                foreach(string XmlFile in Directory.GetFiles(Direc))
+                {
+                    XmlReader Reader = new XmlReader(XmlFile);
+                    List<string> Output = Reader.GetTagData(RequiredTag, ParentTag);
+                    Writer Write = new Writer();
+                    Write.WriteToTxt(PreprocessPath(XmlFile), Output); 
+                }
+
+            }
 
             Console.ReadKey();
         }
