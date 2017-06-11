@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.IO;
 namespace CleanDepressionDataset
 {
     class Program
     {
         private static readonly string RequiredTag = "TEXT";
         private static readonly string ParentTag = "WRITING";
+
         static void Main(string[] args)
         {
-            
-            XmlReader Reader = new XmlReader("C:\\Users\\abkma\\reddit-depression\\testing\\chunk_1\\test_subject25_1.xml");
+            // add file exists check later 
+            XmlReader Reader = new XmlReader(@"C:\Users\abkma\reddit-depression\testing\chunk_1\test_subject25_1.xml");
             List<string> Output = Reader.GetTagData(RequiredTag,ParentTag);
-            foreach(string s in Output)
-            {
-                Console.WriteLine(s);
-            }
+            Writer Write = new Writer();
+            Write.WriteToTxt(@"C:\Users\abkma\reddit-depression\cleaned_testing\chunk_1\test.txt", Output);
 
             Console.ReadKey();
         }
