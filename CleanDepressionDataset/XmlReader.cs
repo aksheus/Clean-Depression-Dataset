@@ -1,19 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-
+using System.IO;
 namespace CleanDepressionDataset
 {
     class XmlReader
     {
         private string XmlFile;
         private XmlDocument Document;
+        private bool Alright;
+
+        public bool IsItAlright
+        {
+            get => Alright;
+            set => Alright = value;
+        }
 
         public XmlReader(string xmlFile)
         {
             XmlFile = xmlFile;
-            Document = new XmlDocument();
-            Document.Load(xmlFile);
+            IsItAlright = true;
+            if (File.Exists(xmlFile))
+            {
+                try
+                {
+                    Document = new XmlDocument();
+                    Document.Load(xmlFile);
+                }
+                catch (Exception Exp)
+                {
+                    IsItAlright = false;
+                }
+            }
         }
 
 

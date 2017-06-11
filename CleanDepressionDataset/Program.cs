@@ -8,8 +8,8 @@ namespace CleanDepressionDataset
     {
         private static readonly string RequiredTag = "TEXT";
         private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\testing";
+        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\training\cleaned_negative";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\training\negative_examples_anonymous_chunks";
 
         static void Main(string[] args)
         {
@@ -20,9 +20,12 @@ namespace CleanDepressionDataset
                 foreach(string XmlFile in Directory.GetFiles(Direc))
                 {
                     XmlReader Reader = new XmlReader(XmlFile);
-                    List<string> Output = Reader.GetTagData(RequiredTag, ParentTag);
-                    Writer Write = new Writer();
-                    Write.WriteToTxt(PreprocessPath(XmlFile), Output); 
+                    if (Reader.IsItAlright)
+                    {
+                        List<string> Output = Reader.GetTagData(RequiredTag, ParentTag);
+                        Writer Write = new Writer();
+                        Write.WriteToTxt(PreprocessPath(XmlFile), Output);
+                    }
                 }
 
             }
