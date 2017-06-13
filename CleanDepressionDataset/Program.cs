@@ -6,9 +6,9 @@ namespace CleanDepressionDataset
 {
     class Program
     {
-        private static readonly string RequiredTag = "TEXT";
-        private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing\chunk1-2";
+        //private static readonly string RequiredTag = "TEXT";
+        //private static readonly string ParentTag = "WRITING";
+        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
         private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
         private static readonly int NumberOfFiles = 401;
         private static readonly string[] Chunks = new string[]
@@ -24,6 +24,33 @@ namespace CleanDepressionDataset
             "\\chunk_9",
             "\\chunk_10"
         };
+
+        private static readonly Dictionary<int, string> ChunkFolders = new Dictionary<int, string>()
+        {
+            { 0 , "\\chunk1-2" },
+            { 1 , "\\chunk1-2-3" },
+            { 2 , "\\chunk1-2-3-4"},
+            { 3 , "\\chunk1-2-3-4-5"},
+            { 4 , "\\chunk1-2-3-4-5-6" },
+            { 5 , "\\chunk1-2-3-4-5-6-7" },
+            { 6 , "\\chunk1-2-3-4-5-6-7-8" },
+            { 7 , "\\chunk1-2-3-4-5-6-7-8-9" },
+            { 8 , "\\chunk1-2-3-4-5-6-7-8-9-10" }
+
+        };
+        private static readonly Dictionary<int, int[]> Iterator = new Dictionary<int, int[]>()
+        {
+            { 0 , new int [] { 0, 1 } },
+            { 1 , new int [] { 0, 1 ,2 } },
+            { 2 , new int [] { 0, 1 ,2 ,3 } },
+            { 3 , new int [] { 0, 1 ,2 ,3 ,4 } },
+            { 4 , new int [] { 0, 1 ,2 ,3 ,4 ,5 } },
+            { 5 , new int [] { 0, 1 ,2 ,3 ,4 ,5,6 } },
+            { 6 , new int [] { 0, 1 ,2 ,3 ,4 ,5,6,7 } },
+            { 7 , new int [] { 0, 1 ,2 ,3 ,4 ,5,6,7,8 } },
+            { 8 , new int [] { 0, 1 ,2 ,3 ,4 ,5,6,7,8 ,9} }
+        };
+
         static void Main(string[] args)
         {
             List<string> FilesToCombine = new List<string> ();
@@ -43,10 +70,21 @@ namespace CleanDepressionDataset
                     }
                 }
             }
+           // FileCombiner Combiner = new FileCombiner(FilesToCombine, WriteDirectory);
+            //Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
 
-            FileCombiner Combiner = new FileCombiner(FilesToCombine, WriteDirectory);
-            Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
-                 
+            for(int Index = 0; Index < 9; Index ++)
+            {
+                List<string> TempList = new List<string>();
+                foreach( int Iter in Iterator[Index])
+                {
+                    TempList.Add(FilesToCombine[Iter]);
+                }
+                FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory+ChunkFolders[Index]);
+                Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
+            }
+
+
 
             // For single chunks 
             /*
