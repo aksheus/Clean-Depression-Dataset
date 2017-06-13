@@ -8,7 +8,7 @@ namespace CleanDepressionDataset
     {
         private static readonly string RequiredTag = "TEXT";
         private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\training\cleaned_positive";
+        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing\chunk1-2";
         private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
         private static readonly int NumberOfFiles = 401;
         private static readonly string[] Chunks = new string[]
@@ -35,18 +35,17 @@ namespace CleanDepressionDataset
             for ( int Index = 1; Index < Chunks.Length; Index++)
             {
                 // get the file we need 
-                foreach (string s in Directory.GetFiles(ReadDirectory + Chunks[Index]))
+                foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[Index]))
                 {
-                    if (IsTheNextChunk(FilesToCombine[0], s))
+                    if (IsTheNextChunk(FilesToCombine[0], NextFile))
                     {
-                        FilesToCombine.Add(s);
+                        FilesToCombine.Add(NextFile);
                     }
                 }
             }
-            foreach(string x in FilesToCombine)
-            {
-                Console.WriteLine(x);
-            }
+
+            FileCombiner Combiner = new FileCombiner(FilesToCombine, WriteDirectory);
+            Combiner.WriteCombinedFiles("hmm.txt");
                  
 
             // For single chunks 

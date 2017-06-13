@@ -21,12 +21,13 @@ namespace CleanDepressionDataset
             Files = files;
             WritePath = writePath;
             Alright = true;
+            CombinedContent = new List<string>();
         }
 
         public void WriteCombinedFiles(string newFile)
         {
             CombineFiles();
-            File.WriteAllLines(newFile, CombinedContent.ToArray());
+            File.WriteAllLines(WritePath+"\\"+newFile, CombinedContent.ToArray());
         }
 
         public void CombineFiles()
