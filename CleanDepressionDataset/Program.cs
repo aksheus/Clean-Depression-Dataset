@@ -45,7 +45,7 @@ namespace CleanDepressionDataset
             }
 
             FileCombiner Combiner = new FileCombiner(FilesToCombine, WriteDirectory);
-            Combiner.WriteCombinedFiles("hmm.txt");
+            Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
                  
 
             // For single chunks 
@@ -86,14 +86,21 @@ namespace CleanDepressionDataset
         public static bool IsTheNextChunk(string first, string second)
         {
             string [] Temp1 = first.Split('\\');
-          
             string [] Temp2 = second.Split('\\');
-           
             string First = Temp1[Temp1.Length - 1];
-         
             string Second = Temp2[Temp2.Length - 1];
-
             return First.Split('_')[1].Equals(Second.Split('_')[1]);
+        }
+
+        public static string GetNameFromPath(string path)
+        {
+            string[] Temp = path.Split('\\');
+
+            return Temp[Temp.Length - 1]
+                   .Split('_')
+                   [1]
+                   + ".txt";
+             
         }
 
     }
