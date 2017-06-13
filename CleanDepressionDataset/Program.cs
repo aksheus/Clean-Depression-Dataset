@@ -9,7 +9,7 @@ namespace CleanDepressionDataset
         private static readonly string RequiredTag = "TEXT";
         private static readonly string ParentTag = "WRITING";
         private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\training\cleaned_positive";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\training\positive_examples_anonymous_chunks";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
         private static readonly int NumberOfFiles = 401;
         private static readonly string[] Chunks = new string[]
         {
@@ -26,20 +26,26 @@ namespace CleanDepressionDataset
         };
         static void Main(string[] args)
         {
+            List<string> FilesToCombine = new List<string> ();
 
-            string FirstChunk = Directory.GetFiles(ReadDirectory + Chunks[0])[0];
+            FilesToCombine.Add( Directory.GetFiles(ReadDirectory + Chunks[0])[0] );
 
+
+            // iterate over chunks 
             for ( int Index = 1; Index < Chunks.Length; Index++)
             {
-                List<string> FilesToCombine = new List<string>();
-                string NextChunk;
+                // get the file we need 
                 foreach (string s in Directory.GetFiles(ReadDirectory + Chunks[Index]))
                 {
-                    if (IsTheNextChunk(FirstChunk, s))
+                    if (IsTheNextChunk(FilesToCombine[0], s))
                     {
-                        NextChunk = s;
+                        FilesToCombine.Add(s);
                     }
                 }
+            }
+            foreach(string x in FilesToCombine)
+            {
+                Console.WriteLine(x);
             }
                  
 
@@ -80,9 +86,16 @@ namespace CleanDepressionDataset
 
         public static bool IsTheNextChunk(string first, string second)
         {
-            return first.Substring(0, first.Length - 2)
-                        .Equals(second.Substring(0, second.Length - 2));
+            string [] Temp1 = first.Split('\\');
+          
+            string [] Temp2 = second.Split('\\');
+           
+            string First = Temp1[Temp1.Length - 1];
+         
+            string Second = Temp2[Temp2.Length - 1];
+
+            return First.Split('_')[1].Equals(Second.Split('_')[1]);
         }
-        
+
     }
 }
