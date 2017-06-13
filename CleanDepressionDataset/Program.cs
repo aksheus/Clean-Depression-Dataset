@@ -8,9 +8,9 @@ namespace CleanDepressionDataset
     {
         //private static readonly string RequiredTag = "TEXT";
         //private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_testing";
-        private static readonly int NumberOfFiles = 401;
+        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
+        private static readonly int NumberOfFiles = 403;
         private static readonly string[] Chunks = new string[]
         {
             "\\chunk_1",
@@ -53,37 +53,37 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-            List<string> FilesToCombine = new List<string> ();
-
-            FilesToCombine.Add( Directory.GetFiles(ReadDirectory + Chunks[0])[0] );
-
-
-            // iterate over chunks 
-            for ( int Index = 1; Index < Chunks.Length; Index++)
+            for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
             {
-                // get the file we need 
-                foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[Index]))
+                List<string> FilesToCombine = new List<string>();
+
+                // add first chunk for each subject 
+                FilesToCombine.Add(Directory.GetFiles(ReadDirectory + Chunks[0])[OuterIndex]);
+
+                // iterate over chunks 
+                for (int InnerIndex = 1; InnerIndex < Chunks.Length; InnerIndex++)
                 {
-                    if (IsTheNextChunk(FilesToCombine[0], NextFile))
+                    // get the file we need 
+                    foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[InnerIndex]))
                     {
-                        FilesToCombine.Add(NextFile);
+                        if (IsTheNextChunk(FilesToCombine[0], NextFile))
+                        {
+                            FilesToCombine.Add(NextFile);
+                        }
                     }
                 }
-            }
-           // FileCombiner Combiner = new FileCombiner(FilesToCombine, WriteDirectory);
-            //Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
 
-            for(int Index = 0; Index < 9; Index ++)
-            {
-                List<string> TempList = new List<string>();
-                foreach( int Iter in Iterator[Index])
+                for (int InnerIndex = 0; InnerIndex < 9; InnerIndex++)
                 {
-                    TempList.Add(FilesToCombine[Iter]);
+                    List<string> TempList = new List<string>();
+                    foreach (int Iter in Iterator[InnerIndex])
+                    {
+                        TempList.Add(FilesToCombine[Iter]);
+                    }
+                    FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
+                    Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
                 }
-                FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory+ChunkFolders[Index]);
-                Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
             }
-
 
 
             // For single chunks 
