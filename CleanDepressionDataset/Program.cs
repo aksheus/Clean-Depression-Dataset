@@ -8,8 +8,8 @@ namespace CleanDepressionDataset
     {
         //private static readonly string RequiredTag = "TEXT";
         //private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
+        private static readonly string WriteDirectory = @"";
+        private static readonly string ReadDirectory = @"";
         private static readonly int NumberOfFiles = 403;
         private static readonly string[] Chunks = new string[]
         {
