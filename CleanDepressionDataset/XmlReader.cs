@@ -57,6 +57,49 @@ namespace CleanDepressionDataset
             return TextData;
         }
 
+        public Dictionary<string,List<string>> GetTagData(string keyTag,string firstValueTag,string secondValueTag,string parentTag)
+        {
+            Dictionary<string, List<string>> TextData = new Dictionary<string, List<string>>();
+
+            foreach (XmlNode Node in Document.DocumentElement.ChildNodes)
+            {
+                if (Node.Name == parentTag && Node.HasChildNodes)
+                {
+                    foreach (XmlNode Child in Node.ChildNodes)
+                    {
+                        string  FirstValueTagData="",SecondValueTagData="";
+                        string KeyTagData = "";
+                        if (Child.Name == keyTag)
+                        {
+                           KeyTagData = DateTime.Parse(Child.InnerText).Date.ToShortDateString();
+                        }
+                        if ( Child.Name == firstValueTag)
+                        {
+                            FirstValueTagData = Child.InnerText;
+                        }
+                        if ( Child.Name == secondValueTag)
+                        {
+                            SecondValueTagData = Child.InnerText;
+                        }
+
+                        if (KeyTagData !="") {
+                            if (!TextData.ContainsKey(KeyTagData))
+                            {
+                                TextData.Add(KeyTagData, new List<string>() { FirstValueTagData + SecondValueTagData });
+                            }
+                            else 
+                            {
+                                TextData[KeyTagData].Add(FirstValueTagData + SecondValueTagData);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            return TextData;
+        }
+
         public void PrintContent()
         {
             foreach(XmlNode Node in Document.DocumentElement.ChildNodes)

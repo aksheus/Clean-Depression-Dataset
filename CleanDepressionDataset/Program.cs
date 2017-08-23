@@ -6,10 +6,12 @@ namespace CleanDepressionDataset
 {
     class Program
     {
-        //private static readonly string RequiredTag = "TEXT";
-        //private static readonly string ParentTag = "WRITING";
+        private static readonly string TextTag = "TEXT";
+        private static readonly string TitleTag = "TITLE";
+        private static readonly string DateTag = "DATE";
+        private static readonly string ParentTag = "WRITING";
         private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\training\positive_examples_anonymous_chunks";
         private static readonly int NumberOfFiles = 403;
         private static readonly string[] Chunks = new string[]
         {
@@ -53,9 +55,9 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-            for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
+           /* for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
             {
-                List<string> FilesToCombine = new List<string>();
+               List<string> FilesToCombine = new List<string>();
 
                 // add first chunk for each subject 
                 FilesToCombine.Add(Directory.GetFiles(ReadDirectory + Chunks[0])[OuterIndex]);
@@ -83,28 +85,35 @@ namespace CleanDepressionDataset
                     FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
                     Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
                 }
-            }
+            } */
 
 
             // For single chunks 
-            /*
-                 string[] Directories = Directory.GetDirectories(ReadDirectory);
-             * 
-             *   foreach ( string Direc in Directories)
-                 {
+            
+            string[] Directories = Directory.GetDirectories(ReadDirectory);
+              
+            foreach ( string Direc in Directories)
+                {
                     foreach(string XmlFile in Directory.GetFiles(Direc))
                     {
-                        XmlReader Reader = new XmlReader(XmlFile);
+                            Console.WriteLine(XmlFile);
+                            XmlReader Reader = new XmlReader(XmlFile);
                         if (Reader.IsItAlright)
                         {
-                            List<string> Output = Reader.GetTagData(RequiredTag, ParentTag);
-                            Writer Write = new Writer();
-                            Write.WriteToTxt(PreprocessPath(XmlFile), Output);
+                        //  List<string> TextOutput = Reader.GetTagData(TextTag, ParentTag);
+                            Dictionary<string, List<string>> DateToPost = Reader.GetTagData(DateTag, TextTag, TitleTag, ParentTag);
+                            foreach(KeyValuePair<string,List<string>> kvp in DateToPost)
+                            {
+                                Console.WriteLine(kvp.Key + ":" + kvp.Value.Count);
+                            }
+                            Console.ReadKey();
+                            // Writer Write = new Writer();
+                            //Write.WriteToTxt(PreprocessPath(XmlFile), Output);
                         }
                     }
-                 }
+                }
 
-            */
+            
 
             Console.ReadKey();
         }
