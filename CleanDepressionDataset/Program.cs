@@ -121,13 +121,25 @@ namespace CleanDepressionDataset
                     }
                 }
             }
-
-            foreach(KeyValuePair<string,List<int>> kvp in PostsPerDay)
-            {
-                Console.WriteLine(kvp.Key + ":" + kvp.Value.Count);
-            }
+            WriteStatistics(ref PostsPerDay);
             Console.WriteLine(PostsPerDay.Count);
             Console.ReadKey();
+        }
+
+        public static void WriteStatistics(ref Dictionary<string, List<int>> postsPerUnit)
+        {
+             using(StreamWriter sw = File.CreateText(@"C:\Users\abkma\nlp\reddit-depression\stats.txt"))
+             {
+                sw.WriteLine("SubjectName"+"        "+"Average"+"       "+"StandardDeviation");
+                foreach (KeyValuePair<string, List<int>> kvp in postsPerUnit)
+                {
+                    double Average = kvp.Value.Average();
+                    double SumOfSquaredDiff = kvp.Value.Select(z => (z - Average) * (z - Average)).Sum();
+                    double StandardDeviation = Math.Sqrt(SumOfSquaredDiff / kvp.Value.Count);
+                    sw.WriteLine(kvp.Key+"      "+Average+"     "+StandardDeviation);
+
+                }
+             }
         }
 
         public static string PreprocessPath(string readFilePath)
