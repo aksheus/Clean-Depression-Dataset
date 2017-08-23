@@ -11,7 +11,7 @@ namespace CleanDepressionDataset
         private static readonly string DateTag = "DATE";
         private static readonly string ParentTag = "WRITING";
         private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\training\positive_examples_anonymous_chunks";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\testing";
         private static readonly int NumberOfFiles = 403;
         private static readonly string[] Chunks = new string[]
         {
@@ -128,15 +128,15 @@ namespace CleanDepressionDataset
 
         public static void WriteStatistics(ref Dictionary<string, List<int>> postsPerUnit)
         {
-             using(StreamWriter sw = File.CreateText(@"C:\Users\abkma\nlp\reddit-depression\stats.txt"))
+             using(StreamWriter sw = File.CreateText(@"C:\Users\abkma\nlp\reddit-depression\stats.csv"))
              {
-                sw.WriteLine("SubjectName"+"        "+"Average"+"       "+"StandardDeviation");
+                sw.WriteLine("SubjectName"+","+"Average"+","+"StandardDeviation");
                 foreach (KeyValuePair<string, List<int>> kvp in postsPerUnit)
                 {
                     double Average = kvp.Value.Average();
                     double SumOfSquaredDiff = kvp.Value.Select(z => (z - Average) * (z - Average)).Sum();
                     double StandardDeviation = Math.Sqrt(SumOfSquaredDiff / kvp.Value.Count);
-                    sw.WriteLine(kvp.Key+"      "+Average+"     "+StandardDeviation);
+                    sw.WriteLine(kvp.Key+","+Average+","+StandardDeviation);
 
                 }
              }
