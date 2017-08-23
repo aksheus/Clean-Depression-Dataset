@@ -91,30 +91,42 @@ namespace CleanDepressionDataset
             // For single chunks 
             
             string[] Directories = Directory.GetDirectories(ReadDirectory);
-              
+
+            Dictionary<string, List<int>> PostsPerDay = new Dictionary<string, List<int>>();
             foreach ( string Direc in Directories)
+            {
+                foreach(string XmlFile in Directory.GetFiles(Direc))
                 {
-                    foreach(string XmlFile in Directory.GetFiles(Direc))
+                    // Console.WriteLine(XmlFile);
+                    XmlReader Reader = new XmlReader(XmlFile);
+                    string SubjectName = GetNameFromPath(XmlFile).Split('.')[0];
+                    if (Reader.IsItAlright)
                     {
-                            Console.WriteLine(XmlFile);
-                            XmlReader Reader = new XmlReader(XmlFile);
-                        if (Reader.IsItAlright)
+                    //  List<string> TextOutput = Reader.GetTagData(TextTag, ParentTag);
+                        Dictionary<string, List<string>> DateToPost = Reader.GetTagData(DateTag, TextTag, TitleTag, ParentTag);
+                        foreach (KeyValuePair<string,List<string>> kvp in DateToPost)
                         {
-                        //  List<string> TextOutput = Reader.GetTagData(TextTag, ParentTag);
-                            Dictionary<string, List<string>> DateToPost = Reader.GetTagData(DateTag, TextTag, TitleTag, ParentTag);
-                            foreach(KeyValuePair<string,List<string>> kvp in DateToPost)
+                            if (!PostsPerDay.ContainsKey(SubjectName))
                             {
-                                Console.WriteLine(kvp.Key + ":" + kvp.Value.Count);
+                                PostsPerDay[SubjectName] = new List<int> { kvp.Value.Count };
                             }
-                            Console.ReadKey();
-                            // Writer Write = new Writer();
-                            //Write.WriteToTxt(PreprocessPath(XmlFile), Output);
+                            else
+                            {
+                                PostsPerDay[SubjectName].Add(kvp.Value.Count);
+                            }
                         }
+
+                        // Writer Write = new Writer();
+                        //Write.WriteToTxt(PreprocessPath(XmlFile), Output);
                     }
                 }
+            }
 
-            
-
+            foreach(KeyValuePair<string,List<int>> kvp in PostsPerDay)
+            {
+                Console.WriteLine(kvp.Key + ":" + kvp.Value.Count);
+            }
+            Console.WriteLine(PostsPerDay.Count);
             Console.ReadKey();
         }
 
@@ -149,6 +161,6 @@ namespace CleanDepressionDataset
                    + ".txt";
              
         }
-
+        
     }
 }
