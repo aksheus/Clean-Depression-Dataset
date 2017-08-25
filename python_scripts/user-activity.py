@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib
 import csv
 import os
 import sys
 """
-USAGE : python user-activity.py path_to_csv_file1 path_to_csvfile2 path_to_csv_file3 bar_graph_title boxplot_title"""
+USAGE : python user-activity.py path_to_csv_file1 path_to_csvfile2 path_to_csv_file3 which_data_set"""
 
 def get_stuff(filename):
 	subjects = []
@@ -44,8 +45,40 @@ def plot_bargraph(title,values,categories):
 	plt.title(title)
 	plt.show()
 
-def plot_boxplot(values,categories):
-	pass 
+def plot_boxplot(title,values,categories):
+	# Create a figure instance
+	fig = plt.figure(1, figsize=(9, 6))
+	# Create an axes instance
+	ax = fig.add_subplot(111)
+	# Create the boxplot
+	bp = ax.boxplot(values,patch_artist=True)
+	ax.set_xticklabels(categories)
+	ax.set_title(title)
+	# Save the figure
+	fig.savefig('box.png', bbox_inches='tight')
+	## change outline color, fill color and linewidth of the boxes
+	for box in bp['boxes']:
+	    # change outline color
+	    box.set( color='#7570b3', linewidth=2)
+	    # change fill color
+	    box.set( facecolor = '#1b9e77' )
+
+	## change color and linewidth of the whiskers
+	for whisker in bp['whiskers']:
+	    whisker.set(color='#7570b3', linewidth=2)
+
+	## change color and linewidth of the caps
+	for cap in bp['caps']:
+	    cap.set(color='#7570b3', linewidth=2)
+
+	## change color and linewidth of the medians
+	for median in bp['medians']:
+	    median.set(color='#b2df8a', linewidth=2)
+
+	## change the style of fliers and their fill
+	for flier in bp['fliers']:
+	    flier.set(marker='o', color='#e7298a', alpha=0.5)
+	
 
 if __name__ == '__main__':
 
@@ -53,8 +86,8 @@ if __name__ == '__main__':
 	subjects2,averages2,standard_deviations2,grand_mean2,minimum2,maximum2,grand_sd2 = get_stuff(sys.argv[2])
 	subjects3,averages3,standard_deviations3,grand_mean3,minimum3,maximum3,grand_sd3 = get_stuff(sys.argv[3])
 
-	plot_bargraph('Comparison of User-Activity in Positive-Train',[grand_mean1,grand_mean2,grand_mean3],('day','month','year'))
-
+	plot_bargraph('Comparison of User-Activity in '+sys.argv[4],[grand_mean1,grand_mean2,grand_mean3],('day','month','year'))
+	plot_boxplot('Distribution of Average Posts For Each User in '+sys.argv[4],[averages1,averages2,averages3],['day','month','year'])
 
 
 
