@@ -10,8 +10,8 @@ namespace CleanDepressionDataset
         private static readonly string TitleTag = "TITLE";
         private static readonly string DateTag = "DATE";
         private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\reddit-depression\cleaned_training\cleaned_negative";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\testing";
+        private static readonly string WriteDirectory = @"C:\Users\abkma\nlp\reddit-depression\cleaned-train\cleaned-pos";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\training\positive_examples_anonymous_chunks";
         private static readonly int NumberOfFiles = 403;
         private static readonly string[] Chunks = new string[]
         {
@@ -55,91 +55,117 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-           /* for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
-            {
-               List<string> FilesToCombine = new List<string>();
+            /* for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
+             {
+                List<string> FilesToCombine = new List<string>();
 
-                // add first chunk for each subject 
-                FilesToCombine.Add(Directory.GetFiles(ReadDirectory + Chunks[0])[OuterIndex]);
+                 // add first chunk for each subject 
+                 FilesToCombine.Add(Directory.GetFiles(ReadDirectory + Chunks[0])[OuterIndex]);
 
-                // iterate over chunks 
-                for (int InnerIndex = 1; InnerIndex < Chunks.Length; InnerIndex++)
-                {
-                    // get the file we need 
-                    foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[InnerIndex]))
-                    {
-                        if (IsTheNextChunk(FilesToCombine[0], NextFile))
-                        {
-                            FilesToCombine.Add(NextFile);
-                        }
-                    }
-                }
+                 // iterate over chunks 
+                 for (int InnerIndex = 1; InnerIndex < Chunks.Length; InnerIndex++)
+                 {
+                     // get the file we need 
+                     foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[InnerIndex]))
+                     {
+                         if (IsTheNextChunk(FilesToCombine[0], NextFile))
+                         {
+                             FilesToCombine.Add(NextFile);
+                         }
+                     }
+                 }
 
-                for (int InnerIndex = 0; InnerIndex < 9; InnerIndex++)
-                {
-                    List<string> TempList = new List<string>();
-                    foreach (int Iter in Iterator[InnerIndex])
-                    {
-                        TempList.Add(FilesToCombine[Iter]);
-                    }
-                    FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
-                    Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
-                }
-            } */
+                 for (int InnerIndex = 0; InnerIndex < 9; InnerIndex++)
+                 {
+                     List<string> TempList = new List<string>();
+                     foreach (int Iter in Iterator[InnerIndex])
+                     {
+                         TempList.Add(FilesToCombine[Iter]);
+                     }
+                     FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
+                     Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
+                 }
+             } */
 
 
             // For single chunks 
-            
             string[] Directories = Directory.GetDirectories(ReadDirectory);
-
-            Dictionary<string, List<int>> PostsPerDay = new Dictionary<string, List<int>>();
-            foreach ( string Direc in Directories)
+            foreach (string Direc in Directories)
             {
-                foreach(string XmlFile in Directory.GetFiles(Direc))
+                foreach (string XmlFile in Directory.GetFiles(Direc))
                 {
-                    // Console.WriteLine(XmlFile);
                     XmlReader Reader = new XmlReader(XmlFile);
-                    string SubjectName = GetNameFromPath(XmlFile).Split('.')[0];
                     if (Reader.IsItAlright)
                     {
-                    //  List<string> TextOutput = Reader.GetTagData(TextTag, ParentTag);
-                        Dictionary<string, List<string>> DateToPost = Reader.GetTagData(DateTag, TextTag, TitleTag, ParentTag);
-                        foreach (KeyValuePair<string,List<string>> kvp in DateToPost)
-                        {
-                            if (!PostsPerDay.ContainsKey(SubjectName))
-                            {
-                                PostsPerDay[SubjectName] = new List<int> { kvp.Value.Count };
-                            }
-                            else
-                            {
-                                PostsPerDay[SubjectName].Add(kvp.Value.Count);
-                            }
-                        }
-
-                        // Writer Write = new Writer();
-                        //Write.WriteToTxt(PreprocessPath(XmlFile), Output);
+                        List<string> Output = Reader.GetTagData(TextTag,TitleTag, ParentTag);
+                        Writer Write = new Writer();
+                        Write.WriteToTxt(PreprocessPath(XmlFile), Output);
                     }
                 }
             }
-            WriteStatistics(ref PostsPerDay);
-            Console.WriteLine(PostsPerDay.Count);
-            Console.ReadKey();
+
+            /*
+             *  statistics
+             * string[] Directories = Directory.GetDirectories(ReadDirectory);
+
+              Dictionary<string, List<int>> PostsPerDay = new Dictionary<string, List<int>>();
+              foreach ( string Direc in Directories)
+              {
+                  foreach(string XmlFile in Directory.GetFiles(Direc))
+                  {
+                      // Console.WriteLine(XmlFile);
+                      XmlReader Reader = new XmlReader(XmlFile);
+                      string SubjectName = GetNameFromPath(XmlFile).Split('.')[0];
+                      if (Reader.IsItAlright)
+                      {
+                      //  List<string> TextOutput = Reader.GetTagData(TextTag, ParentTag);
+                          Dictionary<string, List<string>> DateToPost = Reader.GetTagData(DateTag, TextTag, TitleTag, ParentTag);
+
+                          foreach (KeyValuePair<string,List<string>> kvp in DateToPost)
+                          {
+                              Console.WriteLine(kvp.Key);
+                              if (!PostsPerDay.ContainsKey(SubjectName))
+                              {
+                                  PostsPerDay[SubjectName] = new List<int> { kvp.Value.Count };
+                              }
+                              else
+                              {
+                                  PostsPerDay[SubjectName].Add(kvp.Value.Count);
+                              }
+                          }
+
+                          // Writer Write = new Writer();
+                          //Write.WriteToTxt(PreprocessPath(XmlFile), Output);
+                      }
+                  }
+
+
+              }
+              WriteStatistics(ref PostsPerDay);
+              Console.ReadKey(); */
         }
 
         public static void WriteStatistics(ref Dictionary<string, List<int>> postsPerUnit)
         {
-             using(StreamWriter sw = File.CreateText(@"C:\Users\abkma\nlp\reddit-depression\stats.csv"))
-             {
+            List<double> Averages = new List<double>();
+
+            using (StreamWriter sw = File.CreateText(@"C:\Users\abkma\nlp\reddit-depression\stats.csv"))
+            {
                 sw.WriteLine("SubjectName"+","+"Average"+","+"StandardDeviation");
                 foreach (KeyValuePair<string, List<int>> kvp in postsPerUnit)
                 {
                     double Average = kvp.Value.Average();
+                    Averages.Add(Average);
                     double SumOfSquaredDiff = kvp.Value.Select(z => (z - Average) * (z - Average)).Sum();
                     double StandardDeviation = Math.Sqrt(SumOfSquaredDiff / kvp.Value.Count);
                     sw.WriteLine(kvp.Key+","+Average+","+StandardDeviation);
 
                 }
-             }
+            }
+
+            double GrandMean = Averages.Average();
+            double GrandSSDIff = Averages.Select(z => (z - GrandMean) * (z - GrandMean)).Sum();
+            Console.WriteLine("Grand sd :" + Math.Sqrt(GrandSSDIff / Averages.Count));
         }
 
         public static string PreprocessPath(string readFilePath)

@@ -35,7 +35,7 @@ namespace CleanDepressionDataset
         }
 
 
-        public List<string> GetTagData(string requiredTag,string parentTag)
+        public List<string> GetTagData(string requiredTag1,string requiredTag2, string parentTag)
         {
             List<string> TextData = new List<string>();
 
@@ -45,10 +45,18 @@ namespace CleanDepressionDataset
                 {
                     foreach(XmlNode Child in Node.ChildNodes)
                     {
-                        if (Child.Name == requiredTag)
+                        string ToBeAdded = "";
+                        if (Child.Name == requiredTag1)
                         {
-                            TextData.Add(Child.InnerText);
+                            ToBeAdded += Child.InnerText;
                         }
+                        if (Child.Name == requiredTag2)
+                        {
+                            ToBeAdded += Child.InnerText;
+                        }
+
+                        TextData.Add(ToBeAdded);
+
                     }
                 }
                
@@ -71,7 +79,7 @@ namespace CleanDepressionDataset
                         string KeyTagData = "";
                         if (Child.Name == keyTag)
                         {
-                           KeyTagData = DateTime.Parse(Child.InnerText).Date.ToShortDateString();
+                           KeyTagData = DateTime.Parse(Child.InnerText).Month.ToString();
                         }
                         if ( Child.Name == firstValueTag)
                         {
