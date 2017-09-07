@@ -10,9 +10,9 @@ namespace CleanDepressionDataset
         private static readonly string TitleTag = "TITLE";
         private static readonly string DateTag = "DATE";
         private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\nlp\reddit-depression\cleaned-train\cleaned-pos";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\training\positive_examples_anonymous_chunks";
-        private static readonly int NumberOfFiles = 403;
+        private static readonly string WriteDirectory = @"C:\Users\abkma\nlp\reddit-depression\men-train\neg";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\training\negative_examples_anonymous_chunks";
+        private static readonly int NumberOfFiles = 401;
         private static readonly string[] Chunks = new string[]
         {
             "\\chunk_1",
@@ -85,13 +85,12 @@ namespace CleanDepressionDataset
                      FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
                      Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
                  }
-             } */
-
+             }  */
 
             // For single chunks 
-            string[] Directories = Directory.GetDirectories(ReadDirectory);
-            foreach (string Direc in Directories)
-            {
+             string[] Directories = Directory.GetDirectories(ReadDirectory);
+             foreach (string Direc in Directories)
+             {
                 foreach (string XmlFile in Directory.GetFiles(Direc))
                 {
                     XmlReader Reader = new XmlReader(XmlFile);
@@ -102,7 +101,7 @@ namespace CleanDepressionDataset
                         Write.WriteToTxt(PreprocessPath(XmlFile), Output);
                     }
                 }
-            }
+             } 
 
             /*
              *  statistics
