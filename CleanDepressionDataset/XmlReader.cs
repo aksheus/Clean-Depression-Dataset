@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.IO;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace CleanDepressionDataset
 {
@@ -10,6 +11,7 @@ namespace CleanDepressionDataset
     {
         private string XmlFile;
         private XmlDocument Document;
+        private XDocument Xdocument;
         private bool Alright;
         private static readonly string DateTag = "DATE";
         private static readonly (int lower , int upper ) Morning = (6, 14);
@@ -30,16 +32,51 @@ namespace CleanDepressionDataset
             {
                 try
                 {
-                    Document = new XmlDocument();
-                    Document.Load(xmlFile);
+                    Xdocument = XDocument.Load(xmlFile);
+                   // Document = new XmlDocument();
+                   // Document.Load(xmlFile);
+                }
+                catch(XmlException xe)
+                {
+                    Debug.WriteLine(xe.Message);
+                    IsItAlright = false;
                 }
                 catch (Exception Exp)
                 {
                     IsItAlright = false;
+                    Debug.WriteLine(Exp.Message);
                 }
             }
         }
 
+        public List<string> GetTagData(string requiredTag, string parentTag)
+        {
+            List<string> TextData = new List<string>();
+
+            foreach(XElement element in Xdocument.Descendants(requiredTag))
+            {
+                TextData.Add(element.Value);
+            }
+         /* foreach (XmlNode Node in Document.DocumentElement.ChildNodes)
+            {
+                if(Node.Name == requiredTag)
+                {
+                    TextData.Add(Node.InnerText);
+                }
+
+                if (Node.Name == parentTag && Node.HasChildNodes)
+                {
+                    foreach (XmlNode Child in Node.ChildNodes)
+                    {
+                        if (Child.Name == requiredTag)
+                        {
+                            TextData.Add(Child.InnerText);
+                        }
+                    }
+                } 
+            } */
+            return TextData;
+        }
 
         public List<string> GetTagData(string requiredTag1,string requiredTag2,string parentTag)
         {

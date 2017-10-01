@@ -6,13 +6,13 @@ namespace CleanDepressionDataset
 {
     class Program
     {
-        private static readonly string TextTag = "TEXT";
+        private static readonly string TextTag = "post";//"TEXT";
         private static readonly string TitleTag = "TITLE";
         private static readonly string DateTag = "DATE";
-        private static readonly string ParentTag = "WRITING";
-        private static readonly string WriteDirectory = @"C:\Users\abkma\nlp\reddit-depression\men-train\neg";
-        private static readonly string ReadDirectory = @"C:\Users\abkma\nlp\reddit-depression\training\negative_examples_anonymous_chunks";
-        private static readonly int NumberOfFiles = 401;
+        private static readonly string ParentTag = "Blog"; //"WRITING";
+        private static readonly string WriteDirectory = @"C:\Users\abkma\anlp\assign1\cleaned_blogs_train";
+        private static readonly string ReadDirectory = @"C:\Users\abkma\anlp\assign1\blogs_train";
+        private static readonly int NumberOfFiles = 83;
         private static readonly string[] Chunks = new string[]
         {
             "\\chunk_1",
@@ -55,7 +55,7 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-            /* for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
+          /*   for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
              {
                 List<string> FilesToCombine = new List<string>();
 
@@ -96,9 +96,9 @@ namespace CleanDepressionDataset
                     XmlReader Reader = new XmlReader(XmlFile);
                     if (Reader.IsItAlright)
                     {
-                        List<string> Output = Reader.GetTagData(TextTag,TitleTag, ParentTag);
+                        List<string> Output = Reader.GetTagData(TextTag, ParentTag);
                         Writer Write = new Writer();
-                        Write.WriteToTxt(PreprocessPath(XmlFile), Output);
+                        Write.WriteToTxt(PreprocessPath2(XmlFile), Output);
                     }
                 }
              } 
@@ -177,6 +177,29 @@ namespace CleanDepressionDataset
                 + "\\"
                 + Temp[Temp.Length - 1].Split('.').First()
                + ".txt";
+        }
+
+        public static string PreprocessPath2(string readFilePath)
+        {
+            // C:\Users\abkma\anlp\assign1\blogs_train\female\11762.female.25.Student.Aries.xml
+            string[] Temp = readFilePath.Split('\\');
+
+            string ToReturn = WriteDirectory
+                + "\\"
+                + Temp[Temp.Length - 2]
+                + "\\";
+
+            string[] Temp2 = Temp[Temp.Length - 1].Split('.');
+
+            string Fname = "";
+
+            for(int Index = 0; Index < Temp2.Length - 1; Index++)
+            {
+                Fname += Temp2[Index] + ".";
+            }
+
+            return ToReturn + Fname + "txt";
+               //+ ".txt";
         }
 
         public static bool IsTheNextChunk(string first, string second)
