@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
+using System.Diagnostics;
+
 namespace CleanDepressionDataset
 {
     class Program
@@ -55,53 +58,78 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-          /*   for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
-             {
-                List<string> FilesToCombine = new List<string>();
-
-                 // add first chunk for each subject 
-                 FilesToCombine.Add(Directory.GetFiles(ReadDirectory + Chunks[0])[OuterIndex]);
-
-                 // iterate over chunks 
-                 for (int InnerIndex = 1; InnerIndex < Chunks.Length; InnerIndex++)
-                 {
-                     // get the file we need 
-                     foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[InnerIndex]))
-                     {
-                         if (IsTheNextChunk(FilesToCombine[0], NextFile))
-                         {
-                             FilesToCombine.Add(NextFile);
-                         }
-                     }
-                 }
-
-                 for (int InnerIndex = 0; InnerIndex < 9; InnerIndex++)
-                 {
-                     List<string> TempList = new List<string>();
-                     foreach (int Iter in Iterator[InnerIndex])
-                     {
-                         TempList.Add(FilesToCombine[Iter]);
-                     }
-                     FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
-                     Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
-                 }
-             }  */
-
-            // For single chunks 
-             string[] Directories = Directory.GetDirectories(ReadDirectory);
-             foreach (string Direc in Directories)
-             {
-                foreach (string XmlFile in Directory.GetFiles(Direc))
+            // for bad xml files
+            string[] Directories = Directory.GetDirectories(ReadDirectory);
+            foreach (string Direc in Directories)
+            {
+                foreach (string DirtyXmlFile in Directory.GetFiles(Direc))
                 {
-                    XmlReader Reader = new XmlReader(XmlFile);
-                    if (Reader.IsItAlright)
+                    CleanBadXml Cleaner = new CleanBadXml(DirtyXmlFile);
+
+                    XmlDocument Xdoc = new XmlDocument();
+
+                    try
                     {
-                        List<string> Output = Reader.GetTagData(TextTag, ParentTag);
-                        Writer Write = new Writer();
-                        Write.WriteToTxt(PreprocessPath2(XmlFile), Output);
+                        Xdoc.LoadXml(Cleaner.ProcessBadXml());
+                        Xdoc.Save(PreprocessPath3(DirtyXmlFile));
+
                     }
+                    catch(Exception exp)
+                    {
+                        Debug.WriteLine(exp.Message);
+                    }
+
                 }
-             } 
+            }
+
+
+            /*   for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
+               {
+                  List<string> FilesToCombine = new List<string>();
+
+                   // add first chunk for each subject 
+                   FilesToCombine.Add(Directory.GetFiles(ReadDirectory + Chunks[0])[OuterIndex]);
+
+                   // iterate over chunks 
+                   for (int InnerIndex = 1; InnerIndex < Chunks.Length; InnerIndex++)
+                   {
+                       // get the file we need 
+                       foreach (string NextFile in Directory.GetFiles(ReadDirectory + Chunks[InnerIndex]))
+                       {
+                           if (IsTheNextChunk(FilesToCombine[0], NextFile))
+                           {
+                               FilesToCombine.Add(NextFile);
+                           }
+                       }
+                   }
+
+                   for (int InnerIndex = 0; InnerIndex < 9; InnerIndex++)
+                   {
+                       List<string> TempList = new List<string>();
+                       foreach (int Iter in Iterator[InnerIndex])
+                       {
+                           TempList.Add(FilesToCombine[Iter]);
+                       }
+                       FileCombiner Combiner = new FileCombiner(TempList, WriteDirectory + ChunkFolders[InnerIndex]);
+                       Combiner.WriteCombinedFiles(GetNameFromPath(FilesToCombine[0]));
+                   }
+               }  */
+
+            /*   // For single chunks 
+                string[] Directories = Directory.GetDirectories(ReadDirectory);
+                foreach (string Direc in Directories)
+                {
+                   foreach (string XmlFile in Directory.GetFiles(Direc))
+                   {
+                       XmlReader Reader = new XmlReader(XmlFile);
+                       if (Reader.IsItAlright)
+                       {
+                           List<string> Output = Reader.GetTagData(TextTag, ParentTag);
+                           Writer Write = new Writer();
+                           Write.WriteToTxt(PreprocessPath2(XmlFile), Output);
+                       }
+                   }
+                }  */
 
             /*
              *  statistics
@@ -200,6 +228,29 @@ namespace CleanDepressionDataset
 
             return ToReturn + Fname + "txt";
                //+ ".txt";
+        }
+
+
+        public static string PreprocessPath3(string readFilePath)
+        {
+            // C:\Users\abkma\anlp\assign1\blogs_train\female\11762.female.25.Student.Aries.xml
+            string[] Temp = readFilePath.Split('\\');
+
+            string ToReturn = WriteDirectory
+                + "\\"
+                + Temp[Temp.Length - 2]
+                + "\\";
+
+            string[] Temp2 = Temp[Temp.Length - 1].Split('.');
+
+            string Fname = "";
+
+            for (int Index = 0; Index < Temp2.Length - 1; Index++)
+            {
+                Fname += Temp2[Index] + ".";
+            }
+
+            return ToReturn + Fname + "xml";
         }
 
         public static bool IsTheNextChunk(string first, string second)
