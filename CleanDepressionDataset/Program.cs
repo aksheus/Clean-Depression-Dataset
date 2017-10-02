@@ -58,31 +58,6 @@ namespace CleanDepressionDataset
 
         static void Main(string[] args)
         {
-            // for bad xml files
-            string[] Directories = Directory.GetDirectories(ReadDirectory);
-            foreach (string Direc in Directories)
-            {
-                foreach (string DirtyXmlFile in Directory.GetFiles(Direc))
-                {
-                    CleanBadXml Cleaner = new CleanBadXml(DirtyXmlFile);
-
-                    XmlDocument Xdoc = new XmlDocument();
-
-                    try
-                    {
-                        Xdoc.LoadXml(Cleaner.ProcessBadXml());
-                        Xdoc.Save(PreprocessPath3(DirtyXmlFile));
-
-                    }
-                    catch(Exception exp)
-                    {
-                        Debug.WriteLine(exp.Message);
-                    }
-
-                }
-            }
-
-
             /*   for (int OuterIndex = 0; OuterIndex < NumberOfFiles; OuterIndex++)
                {
                   List<string> FilesToCombine = new List<string>();

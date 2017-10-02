@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Xml;
 using System.IO;
-using System.Diagnostics;
-using System.Xml.Linq;
-
+using System.Security;
 
 namespace CleanDepressionDataset
 {
@@ -40,6 +34,9 @@ namespace CleanDepressionDataset
             if (text == null) return text;
             if (text.Length == 0) return text;
 
+            text.Replace("&nbsp;", "&#160;");
+
+            text = EscapeXMLValue(text);
             // a bit complicated, but avoids memory usage if not necessary
             StringBuilder result = null;
             for (int i = 0; i < text.Length; i++)
@@ -66,5 +63,14 @@ namespace CleanDepressionDataset
 
         }
 
+        public string UnescapeXMLValue(string xmlString)
+        {
+            return xmlString.Replace("&apos;", "'").Replace("&quot;", "\"").Replace("&gt;", ">").Replace("&lt;", "<").Replace("&amp;", "&");
+        }
+
+        public string EscapeXMLValue(string xmlString)
+        {
+            return xmlString.Replace("'", "&apos;").Replace("\"", "&quot;").Replace(">", "&gt;").Replace("<", "&lt;").Replace("&", "&amp;");
+        }
     }
 }
