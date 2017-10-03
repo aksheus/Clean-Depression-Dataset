@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
 		to_write = '.'.join( s for s in f.split('.')[:-1]) + '.txt'
 
-		with open(join(write_dir,to_write),'w',errors='replace') as out:
+		with open(join(write_dir,to_write),'w',errors='ignore',encoding='utf8') as out:
 			for p in posts:
 				out.write(p)
 				out.write('\n')
