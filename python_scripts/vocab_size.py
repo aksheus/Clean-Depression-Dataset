@@ -1,5 +1,7 @@
 import os
-import sys 
+import sys
+from collections import defaultdict 
+import numpy as np
 
 join = lambda u,v: os.path.join(u,v)
 isfile = lambda z : os.path.isfile(z)
@@ -13,7 +15,7 @@ if __name__ == '__main__':
 		print('invalid path to directory')
 		exit(1)
 
-	V = set()
+	V = defaultdict(lambda: 0,{})
 
 	exclude = set(['chunk1-2','chunk1-2-3','chunk1-2-3-4','chunk1-2-3-4-5','chunk1-2-3-4-5-6','chunk1-2-3-4-5-6-7','chunk1-2-3-4-5-6-7-8',
 		'chunk1-2-3-4-5-6-7-8-9','chunk1-2-3-4-5-6-7-8-9-10'])
@@ -33,10 +35,18 @@ if __name__ == '__main__':
 						for line in fh:
 							if line.strip():
 								for c in line.split():
-									V.add(c)
+									V[c]+=1
 
-	print('Vocabulary size of corpus is :')
-	print(len(V))
+	freqs = []
+	print('Frequency distribution of corpus is :')
+	print('token	freq')
+	for key in V.keys():
+		print('{}	{}'.format(key,V[key]))
+		freqs.append(V[key])
+	del V
+	print('Mean freq :',np.mean(freqs))
+	print('Standard dev:',np.std(freqs))
+
 
 
 
